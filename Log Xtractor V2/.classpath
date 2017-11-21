@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_65"/>
+	<classpathentry kind="lib" path="C:/Users/ishwasin/AppData/Roaming/JDeveloper/mywork/Log Management System/Model/deploy/jsch-0.1.54.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ishwasin/AppData/Roaming/JDeveloper/mywork/Log Management System/Model/deploy/LMSJAR.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

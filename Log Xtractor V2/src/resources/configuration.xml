@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<environments>
+	<environment name="WP26ST HOST">
+		<url>mum00bvr.in.oracle.com</url>
+		<port>22</port>
+		<username>readonly</username>
+		<password>readonly</password>
+		<logpath>/scratch/app/product/fmw/user_projects/domains/host_domain/servers/obphost_server1/logs/</logpath>
+	</environment>
+	
+	<environment name="WP26SMK HOST">
+		<url>mum00bsc.in.oracle.com</url>
+		<port>22</port>
+		<username>readonly</username>
+		<password>readonly</password>
+		<logpath>/scratch/app/product/fmw/user_projects/domains/host_domain/servers/obphost_server1/logs/</logpath>
+	</environment>
+</environments>
