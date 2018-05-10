@@ -1,8 +1,12 @@
 package com.isk.xtractor.view.ui;
 
+/*
+ * Author : Ishwar Singh
+ * OFSS Westpac
+ * 
+ */
+
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -28,6 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -82,18 +87,18 @@ public class XtractorUI extends JFrame {
 		jComboBoxDate.setBounds(100, 30, 70, 20);
 		
 
-		String months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", };
-		final JComboBox jComboBoxMonth = new JComboBox(months);
+		String monthsName[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", };
+		final JComboBox jComboBoxMonth = new JComboBox(monthsName);
 		jComboBoxMonth.setBounds(180, 30, 100, 20);
 
 		String year[] = { "2015", "2016", "2017", "2018", "2019" };
 		final JComboBox jComboBoxYear = new JComboBox(year);
 		jComboBoxYear.setBounds(290, 30, 100, 20);
-
+		
 		JLabel jLabelStartTime = new JLabel("Start Time");
 		jLabelStartTime.setBounds(100, 120, 100, 20);
 
-		final JTextField jTextFieldStartTime = new JTextField("9:40");
+		final JTextField jTextFieldStartTime = new JTextField("09:40");
 		jTextFieldStartTime.setBounds(100, 150, 100, 20);
 
 		JLabel jLabelEndTime = new JLabel("End Time");
@@ -105,6 +110,12 @@ public class XtractorUI extends JFrame {
 		final JComboBox<String> jComboBoxEnv = new JComboBox<String>();
 		jComboBoxEnv.setBounds(100, 80, 150, 20);
 		jComboBoxEnv.setFont(new Font("Dialog", Font.BOLD, 13));
+		
+		String timeStampSample[] = {"24 Hour","12 Hour"};
+		final JComboBox jComboBoxTimeStampSample = new JComboBox(timeStampSample);
+		jComboBoxTimeStampSample.setBounds(350, 80, 150, 20);
+		jComboBoxTimeStampSample.setFont(new Font("Dialog", Font.BOLD, 13));
+		jComboBoxTimeStampSample.setToolTipText("Select Sample Time Stamp, Configured for the Environment Logs");
 
 		final JLabel jLabelResult = new JLabel("");
 		jLabelResult.setBounds(270, 75, 1000, 30);
@@ -133,28 +144,50 @@ public class XtractorUI extends JFrame {
 				String tmpFileNameStr = Integer.toString(tmpFileName);
 				tmpFileNameStr = tmpFileNameStr + "_log" + ".txt";
 				
-				String month = jComboBoxMonth.getSelectedItem().toString();
+				String month =jComboBoxMonth.getSelectedItem().toString();
 				String date = jComboBoxDate.getSelectedItem().toString();
 				String year = jComboBoxYear.getSelectedItem().toString();
-
-				String queryDate = month + " " + date + "," + " " + year;
-
-			
+				
+				//int monthIndex = jComboBoxMonth.getSelectedIndex() + 1;
+				//System.out.println("monthIndex: "+monthIndex);
 				String startTime = jTextFieldStartTime.getText();
 				String stopTime = jTextFieldEndTime.getText();
-
-				String queryStartDate = queryDate + ", " + startTime;
-				String queryStopDate = queryDate + ", " + stopTime;
+				
+				String queryDate = null;
+				String queryStartDate = null;
+				String queryStopDate = null;
+				if(jComboBoxTimeStampSample.getSelectedItem().toString().equals("24 Hour")){
+					
+					int monthIndex = jComboBoxMonth.getSelectedIndex() + 1;
+					if(monthIndex < 10){
+						queryDate = year+"-0"+monthIndex+"-"+date+"T";
+						queryStartDate = queryDate +startTime;
+						queryStopDate =  queryDate +stopTime;
+					}else{
+						queryDate = year+"-"+monthIndex+"-"+date+"T";
+						queryStartDate = queryDate + startTime;
+						queryStopDate = queryDate + stopTime;
+					}
+				
+					System.out.println(queryDate);
+					
+				}else{
+					
+					queryDate = month + " " + date + "," + " " + year;
+					queryStartDate = queryDate + ", " + startTime;
+					queryStopDate = queryDate + ", " + stopTime;
+					
+				}
 				
 				String logPath = allEnvdetails.get(jComboBoxEnv.getSelectedItem().toString()).getEnvLogPath(); //| awk '$6 == \""+month+"\" && $7 >= 1 && $7 <= 31 {print $9}';
 				
-				String awkCommand = "cd " + logPath + "; awk '/" + queryStartDate + "/{flag=1;next}/"+ queryStopDate + "/{flag=0}flag' " +"*.*"+  " >> /tmp/"+ tmpFileNameStr + ";";
+				String awkCommand = "cd " + logPath + "; awk '/" + queryStartDate + "/{flag=1;next}/"+ queryStopDate + "/{flag=0}flag' " +"ofs*.* obp*.*"+  " >> /tmp/"+ tmpFileNameStr + ";";
 				new LMSApplicationService().performOperation(connectionDTO, awkCommand);
 				
 			
 				System.out.println(awkCommand);
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(20000);
 				} catch (InterruptedException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -337,7 +370,9 @@ public class XtractorUI extends JFrame {
 		jFrame.add(jComboBoxYear);
 		jFrame.add(jButtonLoadConfig);
 		jFrame.add(jComboBoxEnv);
+		jFrame.add(jComboBoxTimeStampSample);
 		jFrame.setVisible(true);
+		jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 	}
 
